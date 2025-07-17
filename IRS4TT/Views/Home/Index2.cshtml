@@ -1,0 +1,673 @@
+﻿@{
+    Layout = null;
+}
+
+@* 
+ایمیل شماره 3 رو واسم توی سیستم ثبت کن و صورتحسابش رو هم با مبلغ 50 میلیارد برای دو روز دیگه بزن
+ *@
+
+<script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+    if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+            var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+
+            // Convert sheet to JSON to filter blank rows
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+            // Filter out blank rows (rows where all cells are empty, null, or undefined)
+            var filteredData = jsonData.filter(row => row.some(filledCell));
+
+            // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+            var headerRowIndex = filteredData.findIndex((row, index) =>
+              row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+            );
+            // Fallback
+            if (headerRowIndex === -1 || headerRowIndex > 25) {
+              headerRowIndex = 0;
+            }
+
+            // Convert filtered JSON back to CSV
+            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+            csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+            return csv;
+        } catch (e) {
+            console.error(e);
+            return "";
+        }
+    }
+    return gk_fileData[filename] || "";
+    }
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRS Modern Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .navbar {
+            background-color: #1a2a44;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+            .navbar .logo {
+                color: #fff;
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+
+            .navbar .nav-links {
+                display: flex;
+                gap: 2rem;
+            }
+
+                .navbar .nav-links a {
+                    color: #fff;
+                    text-decoration: none;
+                    font-size: 1rem;
+                    transition: color 0.3s;
+                }
+
+                    .navbar .nav-links a:hover {
+                        color: #00aaff;
+                    }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+            .nav-icons .icon {
+                position: relative;
+                color: #fff;
+                font-size: 1.2rem;
+                cursor: pointer;
+            }
+
+            .nav-icons .badge {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                background-color: #ff4d4f;
+                color: #fff;
+                border-radius: 50%;
+                padding: 2px 6px;
+                font-size: 0.75rem;
+                font-weight: bold;
+            }
+
+            .nav-icons .tooltip {
+                visibility: hidden;
+                background-color: #333;
+                color: #fff;
+                text-align: center;
+                border-radius: 4px;
+                padding: 5px 10px;
+                position: absolute;
+                z-index: 1;
+                top: 30px;
+                right: -20px;
+                font-size: 0.8rem;
+                white-space: nowrap;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .nav-icons .icon:hover .tooltip {
+                visibility: visible;
+                opacity: 1;
+            }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            flex-direction: column;
+        }
+
+            .main-content h1, .main-content .status-message {
+                text-align: center;
+                width: 100%;
+            }
+
+            .main-content h1 {
+                font-size: 2.5rem;
+                color: #1a2a44;
+                transition: opacity 1s ease-in-out;
+            }
+
+                .main-content h1.hidden {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+
+        .progress-container {
+            width: 60px;
+            height: 60px;
+            margin: 1rem auto;
+            position: relative;
+            display: none;
+            z-index: 10;
+        }
+
+            .progress-container.active {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+        .spinner {
+            width: 100%;
+            height: 100%;
+            border: 6px solid #ddd;
+            border-top: 6px solid #00aaff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0%
+
+        {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+
+        }
+
+        .status-message {
+            font-size: 1.2rem;
+            color: #1a2a44;
+            line-height: 1.5;
+            transition: opacity 1s ease-in-out;
+            z-index: 10;
+        }
+
+            .status-message.hidden {
+                opacity: 0;
+                visibility: hidden;
+            }
+
+            .status-message a {
+                color: #00aaff;
+                text-decoration: none;
+            }
+
+                .status-message a:hover {
+                    text-decoration: underline;
+                }
+
+        .help-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #00aaff;
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+            z-index: 20;
+        }
+
+            .help-icon:hover {
+                transform: scale(1.1);
+            }
+
+        .chatbox {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: #fff;
+            width: 300px;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 20;
+        }
+
+        .chatbox-header {
+            background-color: #1a2a44;
+            color: #fff;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .chatbox-body {
+            padding: 1rem;
+            flex: 1;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+            .chatbox-body p {
+                margin-bottom: 1rem;
+                font-size: 0.9rem;
+                color: #333;
+            }
+
+            .chatbox-body .message {
+                background-color: #e0f7fa;
+                padding: 0.5rem;
+                border-radius: 5px;
+                margin-bottom: 0.5rem;
+            }
+
+            .chatbox-body .error {
+                background-color: #ffe6e6;
+                color: #d32f2f;
+            }
+
+        .chatbox-footer {
+            padding: 0.75rem;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .chatbox-footer input[type="text"] {
+                flex: 1;
+                padding: 0.75rem;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 1rem;
+                direction: rtl;
+                width: 100%;
+            }
+
+            .chatbox-footer .icon-btn {
+                background: none;
+                border: none;
+                font-size: 1.2rem;
+                cursor: pointer;
+                color: #555;
+                transition: color 0.3s;
+            }
+
+                .chatbox-footer .icon-btn:hover {
+                    color: #00aaff;
+                }
+
+                .chatbox-footer .icon-btn.recording {
+                    color: #ff4d4f;
+                }
+
+        @@media (max-width: 768px) {
+            .navbar
+
+        {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .navbar .nav-links {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .main-content h1 {
+            font-size: 1.8rem;
+        }
+
+        .chatbox {
+            width: 90%;
+            max-height: 300px;
+        }
+
+        .progress-container {
+            width: 50px;
+            height: 50px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">IRS</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Services</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </div>
+        <div class="nav-icons">
+            <a href="notifications.html" class="icon notification">
+                🔔 <span class="badge" id="notificationBadge">10</span>
+                <span class="tooltip" id="notificationTooltip">You have 10 new tasks</span>
+            </a>
+            <a href="emails.html" class="icon email">
+                ✉️ <span class="badge" id="emailBadge">5</span>
+                <span class="tooltip" id="emailTooltip">You have 5 new contracts</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="progress-container" id="progressContainer">
+            <div class="spinner"></div>
+        </div>
+        <div class="status-message hidden" id="statusMessage"></div>
+        <h1 id="welcomeMessage">Welcome to IRS</h1>
+    </main>
+
+    <!-- Help Icon and Chatbox -->
+    <div class="help-icon" onclick="toggleChatbox()">❓</div>
+    <div class="chatbox" id="chatbox">
+        <div class="chatbox-header">پشتیبانی</div>
+        <div class="chatbox-body" id="chatboxBody">
+            <p class="message">سلام! چطور می‌توانیم به شما کمک کنیم؟</p>
+        </div>
+        <div class="chatbox-footer">
+            <button class="icon-btn" id="micBtn" title="ضبط صدا">🎤</button>
+            <button class="icon-btn" id="attachBtn" title="پیوست فایل">📎</button>
+            <input type="text" id="textInput" placeholder="پیام خود را بنویسید...">
+            <button class="icon-btn" id="sendBtn" title="ارسال">➤</button>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isRecording = false;
+
+        function toggleChatbox() {
+            const chatbox = document.getElementById('chatbox');
+            console.log('Toggling chatbox, current display:', chatbox.style.display);
+            chatbox.style.display = chatbox.style.display === 'none' || chatbox.style.display === '' ? 'flex' : 'none';
+        }
+
+        async function checkMicrophonePermission() {
+            if (!window.MediaRecorder) {
+                showError('مرورگر شما از ضبط صدا پشتیبانی نمی‌کند. لطفاً از کروم یا فایرفاکس استفاده کنید.');
+                return;
+            }
+
+            if (!window.location.protocol.includes('https') && window.location.hostname !== 'localhost') {
+                showError('برای دسترسی به میکروفن نیاز به HTTPS یا localhost دارید. لطفاً صفحه را در محیط امن باز کنید.');
+                return;
+            }
+
+            if (navigator.permissions && navigator.permissions.query) {
+                try {
+                    const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+                    if (permissionStatus.state === 'denied') {
+                        showError('دسترسی به میکروفن مسدود شده است. لطفاً در تنظیمات مرورگر (Site Settings > Microphone) آن را فعال کنید.');
+                        return;
+                    } else if (permissionStatus.state === 'granted') {
+                        startRecording();
+                    } else {
+                        startRecording();
+                    }
+                } catch (err) {
+                    console.error('خطا در بررسی اجازه میکروفن:', err);
+                    showError('نمی‌توان وضعیت اجازه میکروفن را بررسی کرد. لطفاً دسترسی را چک کنید.');
+                    startRecording();
+                }
+            } else {
+                startRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                recordedChunks = [];
+                isRecording = true;
+
+                const micBtn = document.getElementById('micBtn');
+                micBtn.classList.add('recording');
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    const chatboxBody = document.getElementById('chatboxBody');
+                    const message = document.createElement('p');
+                    message.className = 'message';
+                    message.textContent = 'پیام صوتی ارسال شد';
+                    chatboxBody.appendChild(message);
+                    chatboxBody.scrollTop = chatboxBody.scrollHeight;
+                    console.log('پیام صوتی:', blob);
+                    isRecording = false;
+                    micBtn.classList.remove('recording');
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                showMessage('ضبط صدا شروع شد...');
+            } catch (err) {
+                console.error('خطای میکروفن:', err.name, err.message);
+                let errorMessage = 'نمی‌توان به میکروفن دسترسی پیدا کرد.';
+                if (err.name === 'NotAllowedError') {
+                    errorMessage = 'دسترسی به میکروفن رد شده است. لطفاً در پنجره بازشو یا تنظیمات مرورگر اجازه دهید.';
+                } else if (err.name === 'NotFoundError') {
+                    errorMessage = 'میکروفن پیدا نشد. لطفاً میکروفن را وصل کنید.';
+                } else if (err.name === 'SecurityError') {
+                    errorMessage = 'دسترسی به میکروفن نیاز به HTTPS یا localhost دارد.';
+                }
+                showError(errorMessage);
+            }
+        }
+
+        function showError(message) {
+            const chatboxBody = document.getElementById('chatboxBody');
+            const error = document.createElement('p');
+            error.className = 'message error';
+            error.textContent = message;
+            chatboxBody.appendChild(error);
+            chatboxBody.scrollTop = chatboxBody.scrollHeight;
+        }
+
+        function showMessage(message) {
+            const chatboxBody = document.getElementById('chatboxBody');
+            const msg = document.createElement('p');
+            msg.className = 'message';
+            msg.textContent = message;
+            chatboxBody.appendChild(msg);
+            chatboxBody.scrollTop = chatboxBody.scrollHeight;
+        }
+
+        function showProgressBar() {
+            const progressContainer = document.getElementById('progressContainer');
+            console.log('Showing progress bar');
+            progressContainer.classList.add('active');
+        }
+
+        function hideProgressBar() {
+            const progressContainer = document.getElementById('progressContainer');
+            console.log('Hiding progress bar');
+            progressContainer.classList.remove('active');
+        }
+
+        function showStatusMessage(message, isLink = false) {
+            const statusMessage = document.getElementById('statusMessage');
+            console.log('Showing status message:', message);
+            statusMessage.innerHTML = isLink ? message : message;
+            statusMessage.classList.remove('hidden');
+        }
+
+        function hideStatusMessage() {
+            const statusMessage = document.getElementById('statusMessage');
+            console.log('Hiding status message');
+            statusMessage.classList.add('hidden');
+        }
+
+        function hideWelcomeMessage() {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            console.log('Hiding welcome message');
+            welcomeMessage.classList.add('hidden');
+        }
+
+        function updateBadgesAndTooltips() {
+            const notificationBadge = document.getElementById('notificationBadge');
+            const notificationTooltip = document.getElementById('notificationTooltip');
+
+            if (notificationBadge && notificationTooltip) {
+                let notificationCount = parseInt(notificationBadge.textContent) || 10;
+                notificationCount = notificationCount + 1;
+
+                notificationBadge.textContent = notificationCount;
+                notificationTooltip.textContent = `You have ${notificationCount} new tasks`;
+
+                console.log(`Updated notification badge: ${notificationCount}`);
+            } else {
+                console.error('Notification badge or tooltip not found');
+            }
+        }
+
+        function updateEmailBadgeAndTooltip() {
+            const emailBadge = document.getElementById('emailBadge');
+            const emailTooltip = document.getElementById('emailTooltip');
+            if (emailBadge && emailTooltip) {
+                let emailCount = parseInt(emailBadge.textContent) || 5;
+                emailCount = Math.max(0, emailCount - 1);
+                emailBadge.textContent = emailCount;
+                emailTooltip.textContent = `You have ${emailCount} new contracts`;
+                console.log(`Updated email badge: ${emailCount}`);
+            } else {
+                console.error('Email badge or tooltip not found');
+            }
+        }
+
+        function processSpecificMessage() {
+            console.log('Processing specific message');
+            hideWelcomeMessage();
+            setTimeout(() => {
+                showStatusMessage('Reading email...<br>درحال خواندن ایمیل...');
+                showProgressBar();
+                setTimeout(() => {
+                    hideProgressBar();
+                    hideStatusMessage();
+                    setTimeout(() => {
+                        showStatusMessage('Offer successfully registered in IRS<br>آفر با موفقیت در IRS ثبت شد');
+                        updateEmailBadgeAndTooltip();
+                        setTimeout(() => {
+                            hideStatusMessage();
+                            setTimeout(() => {
+                                showStatusMessage('Creating invoice for 50 billion in two days...<br>درحال ایجاد صورتحساب با مبلغ 50 میلیارد برای دو روز آینده');
+                                showProgressBar();
+                                setTimeout(() => {
+                                    hideProgressBar();
+                                    hideStatusMessage();
+                                    updateBadgesAndTooltips();
+                                    showStatusMessage('Invoice successfully created. Click the link below to view.<br>صورتحساب با موفقیت ایجاد شد. برای مشاهده <a href="#">روی لینک زیر کلیک کنید</a>', true);
+                                }, 10000);
+                            }, 1000);
+                        }, 5000);
+                    }, 1000);
+                }, 10000);
+            }, 1000);
+        }
+
+        document.getElementById('micBtn').addEventListener('click', () => {
+            if (isRecording) {
+                mediaRecorder.stop();
+                showMessage('ضبط صدا متوقف شد.');
+            } else {
+                checkMicrophonePermission();
+            }
+        });
+
+        document.getElementById('attachBtn').addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const chatboxBody = document.getElementById('chatboxBody');
+                const message = document.createElement('p');
+                message.className = 'message';
+                message.textContent = `فایل پیوست شد: ${file ? file.name : 'هیچ'}`;
+                chatboxBody.appendChild(message);
+                chatboxBody.scrollTop = chatboxBody.scrollHeight;
+                console.log('فایل پیوست:', file);
+            };
+            input.click();
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const textInput = document.getElementById('textInput');
+            const messageText = textInput.value.trim();
+            if (messageText) {
+                const chatboxBody = document.getElementById('chatboxBody');
+                const message = document.createElement('p');
+                message.className = 'message';
+                message.textContent = messageText;
+                chatboxBody.appendChild(message);
+                chatboxBody.scrollTop = chatboxBody.scrollHeight;
+                console.log('پیام متنی:', messageText);
+                const targetMessage = 'ایمیل شماره 3 رو واسم توی سیستم ثبت کن و صورتحسابش رو هم با مبلغ 50 میلیارد برای دو روز دیگه بزن';
+                if (messageText.replace(/\s+/g, ' ') === targetMessage.replace(/\s+/g, ' ')) {
+                    console.log('پیام خاص شناسایی شد');
+                    processSpecificMessage();
+                } else {
+                    console.log('پیام واردشده مطابقت ندارد:', messageText);
+                }
+                textInput.value = '';
+            }
+        });
+
+        document.getElementById('textInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('sendBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
