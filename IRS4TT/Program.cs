@@ -1,7 +1,18 @@
+using IRS4TT.Data;
+using IRS4TT.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<ICoverService, CoverService>();
+builder.Services.AddScoped<ICoverGroupService, CoverGroupService>();
+
 
 var app = builder.Build();
 
