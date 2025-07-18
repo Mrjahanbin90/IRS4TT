@@ -27,5 +27,9 @@ namespace IRS4TT.Controllers
         {
             return View();
         }
+        public IActionResult insurance_offer_analysis()
+        {
+            return View();
+        }
     }
 }
