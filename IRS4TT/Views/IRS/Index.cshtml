@@ -1,49 +1,53 @@
 ﻿@{
     Layout = null;
 }
-
 @* 
 ایمیل شماره 3 رو واسم توی سیستم ثبت کن و صورتحسابش رو هم با مبلغ 50 میلیارد برای دو روز دیگه بزن
+ایمیل اول رو بخون و بهم بگو این آفر رو بپذیریم یا خیر؟
  *@
+
+<script type="text/javascript">
+
+
 
 <script type="text/javascript">
     var gk_isXlsx = false;
     var gk_xlsxFileLookup = {};
     var gk_fileData = {};
     function filledCell(cell) {
-      return cell !== '' && cell != null;
+        return cell !== '' && cell != null;
     }
     function loadFileData(filename) {
-    if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-        try {
-            var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-            var firstSheetName = workbook.SheetNames[0];
-            var worksheet = workbook.Sheets[firstSheetName];
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
 
-            // Convert sheet to JSON to filter blank rows
-            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-            // Filter out blank rows (rows where all cells are empty, null, or undefined)
-            var filteredData = jsonData.filter(row => row.some(filledCell));
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
 
-            // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-            var headerRowIndex = filteredData.findIndex((row, index) =>
-              row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-            );
-            // Fallback
-            if (headerRowIndex === -1 || headerRowIndex > 25) {
-              headerRowIndex = 0;
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                    row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                    headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
             }
-
-            // Convert filtered JSON back to CSV
-            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-            csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-            return csv;
-        } catch (e) {
-            console.error(e);
-            return "";
         }
-    }
-    return gk_fileData[filename] || "";
+        return gk_fileData[filename] || "";
     }
 </script>
 <!DOCTYPE html>
@@ -53,6 +57,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IRS Modern Design</title>
     <style>
+        .logo a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .notification {
+            text-decoration: none;
+        }
+
+         .email {
+            text-decoration: none;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -69,10 +85,58 @@
             justify-content: space-between;
         }
 
+        /* Loading Screen */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease-in-out;
+        }
+
+            #loadingScreen.hidden {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+        #loadingImage {
+            max-width: 80%;
+            max-height: 80%;
+            opacity: 0;
+            animation: fadeInImage 1s ease-in forwards;
+        }
+
+        @@keyframes fadeInImage {
+            0%
+
+        {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+
+        }
+
+        /* Main Content */
+        .navbar, .main-content {
+            display: none;
+        }
+
+            .navbar.active, .main-content.active {
+                display: flex;
+            }
+
         .navbar {
             background-color: #1a2a44;
             padding: 1rem 2rem;
-            display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -149,7 +213,6 @@
 
         .main-content {
             flex: 1;
-            display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
@@ -227,57 +290,27 @@
             .status-message a {
                 color: #00aaff;
                 text-decoration: none;
+                margin: 0 5px;
             }
 
                 .status-message a:hover {
                     text-decoration: underline;
                 }
 
-        .help-icon {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #00aaff;
-            color: #fff;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s;
-            z-index: 20;
+        /* Footer Styles */
+        footer {
+            background-color: #f4f7fa;
+            padding: 1rem;
+            width: 100%;
         }
-
-            .help-icon:hover {
-                transform: scale(1.1);
-            }
 
         .chatbox {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
             background-color: #fff;
-            width: 300px;
-            max-height: 400px;
+            width: 100%;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            display: none;
             flex-direction: column;
             overflow: hidden;
-            z-index: 20;
-        }
-
-        .chatbox-header {
-            background-color: #1a2a44;
-            color: #fff;
-            padding: 0.75rem;
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
         }
 
         .chatbox-body {
@@ -285,6 +318,7 @@
             flex: 1;
             overflow-y: auto;
             background-color: #f9f9f9;
+            max-height: 300px;
         }
 
             .chatbox-body p {
@@ -358,35 +392,43 @@
             font-size: 1.8rem;
         }
 
-        .chatbox {
-            width: 90%;
-            max-height: 300px;
-        }
-
         .progress-container {
             width: 50px;
             height: 50px;
+        }
+
+        #loadingImage {
+            max-width: 90%;
+            max-height: 90%;
         }
 
         }
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen">
+        <img id="loadingImage" src="images/system/NewIRS.jpg" height="300" width="300" alt="Loading Image">
+    </div>
+
     <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="logo">IRS</div>
+        <div class="logo">
+            <a href="/IRS">Modern IRS</a>
+        </div>
         <div class="nav-links">
             <a href="#">Home</a>
-            <a href="#">Services</a>
+            <a href="contract.html">Contracts</a>
+            <a href="invoice.html">Invoices</a>
             <a href="#">About</a>
             <a href="#">Contact</a>
         </div>
         <div class="nav-icons">
-            <a href="notifications.html" class="icon notification">
+            <a href="IRS/notification" class="icon notification">
                 🔔 <span class="badge" id="notificationBadge">10</span>
                 <span class="tooltip" id="notificationTooltip">You have 10 new tasks</span>
             </a>
-            <a href="emails.html" class="icon email">
+            <a href="IRS/email" class="icon email">
                 ✉️ <span class="badge" id="emailBadge">5</span>
                 <span class="tooltip" id="emailTooltip">You have 5 new contracts</span>
             </a>
@@ -395,6 +437,7 @@
 
     <!-- Main Content -->
     <main class="main-content" id="mainContent">
+        <img src="~/images/system/irs.png" />
         <div class="progress-container" id="progressContainer">
             <div class="spinner"></div>
         </div>
@@ -402,31 +445,36 @@
         <h1 id="welcomeMessage">Welcome to IRS</h1>
     </main>
 
-    <!-- Help Icon and Chatbox -->
-    <div class="help-icon" onclick="toggleChatbox()">❓</div>
-    <div class="chatbox" id="chatbox">
-        <div class="chatbox-header">پشتیبانی</div>
-        <div class="chatbox-body" id="chatboxBody">
-            <p class="message">سلام! چطور می‌توانیم به شما کمک کنیم؟</p>
+    <!-- Footer with Chatbox -->
+    <footer>
+        <div class="chatbox" id="chatbox">
+            <div class="chatbox-body" id="chatboxBody">
+                <p class="message">سلام! چطور می‌توانیم به شما کمک کنیم؟</p>
+            </div>
+            <div class="chatbox-footer">
+                <button class="icon-btn" id="micBtn" title="ضبط صدا">🎤</button>
+                <button class="icon-btn" id="attachBtn" title="پیوست فایل">📎</button>
+                <input type="text" id="textInput" placeholder="پیام خود را بنویسید...">
+                <button class="icon-btn" id="sendBtn" title="ارسال">➤</button>
+            </div>
         </div>
-        <div class="chatbox-footer">
-            <button class="icon-btn" id="micBtn" title="ضبط صدا">🎤</button>
-            <button class="icon-btn" id="attachBtn" title="پیوست فایل">📎</button>
-            <input type="text" id="textInput" placeholder="پیام خود را بنویسید...">
-            <button class="icon-btn" id="sendBtn" title="ارسال">➤</button>
-        </div>
-    </div>
+    </footer>
 
     <script>
+        // Loading Screen Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                document.querySelector('.navbar').classList.add('active');
+                document.querySelector('.main-content').classList.add('active');
+                console.log('Loading screen hidden, main content shown');
+            }, 4000);
+        });
+
         let mediaRecorder;
         let recordedChunks = [];
         let isRecording = false;
-
-        function toggleChatbox() {
-            const chatbox = document.getElementById('chatbox');
-            console.log('Toggling chatbox, current display:', chatbox.style.display);
-            chatbox.style.display = chatbox.style.display === 'none' || chatbox.style.display === '' ? 'flex' : 'none';
-        }
 
         async function checkMicrophonePermission() {
             if (!window.MediaRecorder) {
@@ -586,6 +634,26 @@
             }
         }
 
+        function processEmailOneOffer() {
+            console.log('Processing email one offer analysis');
+            hideWelcomeMessage();
+            showStatusMessage('در حال خوندن ایمیل ...');
+            showProgressBar();
+            setTimeout(() => {
+                hideProgressBar();
+                showStatusMessage('آفر با موفقیت در IRS ثبت شد...');
+                updateEmailBadgeAndTooltip();
+                setTimeout(() => {
+                    showStatusMessage('در حال آنالیز آفر با توجه به سوابق...');
+                    showProgressBar();
+                    setTimeout(() => {
+                        hideProgressBar();
+                        showStatusMessage('آنالیز تکمیل شد با توجه به سوابق به نظر من آفر خوبی نیست و رد شود.<br>جزئیات بیشتر را می‌توانید <a href="CheckOffer">اینجا</a> مطالعه کنید.', true);
+                    }, 5000);
+                }, 5000);
+            }, 5000);
+        }
+
         function processSpecificMessage() {
             console.log('Processing specific message');
             hideWelcomeMessage();
@@ -596,7 +664,7 @@
                     hideProgressBar();
                     hideStatusMessage();
                     setTimeout(() => {
-                        showStatusMessage('Offer successfully registered in IRS<br>آفر با موفقیت در IRS ثبت شد');
+                        showStatusMessage('Offer successfully registered in IRS<br>ثبت شد IRS آفر با موفقیت در');
                         updateEmailBadgeAndTooltip();
                         setTimeout(() => {
                             hideStatusMessage();
@@ -607,7 +675,7 @@
                                     hideProgressBar();
                                     hideStatusMessage();
                                     updateBadgesAndTooltips();
-                                    showStatusMessage('Invoice successfully created. Click the link below to view.<br>صورتحساب با موفقیت ایجاد شد. برای مشاهده <a href="#">روی لینک زیر کلیک کنید</a>', true);
+                                    showStatusMessage('Invoice successfully created.<br>صورتحساب با موفقیت ایجاد شد. <a  target="_blank" href="Irs/Assesment">دیدن قرارداد</a> <a  target="_blank" href="Irs/printclosing">دیدن صورتحساب</a>', true);
                                 }, 10000);
                             }, 1000);
                         }, 5000);
@@ -652,10 +720,14 @@
                 chatboxBody.appendChild(message);
                 chatboxBody.scrollTop = chatboxBody.scrollHeight;
                 console.log('پیام متنی:', messageText);
-                const targetMessage = 'ایمیل شماره 3 رو واسم توی سیستم ثبت کن و صورتحسابش رو هم با مبلغ 50 میلیارد برای دو روز دیگه بزن';
-                if (messageText.replace(/\s+/g, ' ') === targetMessage.replace(/\s+/g, ' ')) {
-                    console.log('پیام خاص شناسایی شد');
+                const targetMessage1 = 'ایمیل شماره 3 رو واسم توی سیستم ثبت کن و صورتحسابش رو هم با مبلغ 50 میلیارد برای دو روز دیگه بزن';
+                const targetMessage2 = 'ایمیل اول رو بخون و بهم بگو این آفر رو بپذیریم یا خیر؟';
+                if (messageText.replace(/\s+/g, ' ') === targetMessage1.replace(/\s+/g, ' ')) {
+                    console.log('پیام خاص شماره 1 شناسایی شد');
                     processSpecificMessage();
+                } else if (messageText.replace(/\s+/g, ' ') === targetMessage2.replace(/\s+/g, ' ')) {
+                    console.log('پیام خاص شماره 2 شناسایی شد');
+                    processEmailOneOffer();
                 } else {
                     console.log('پیام واردشده مطابقت ندارد:', messageText);
                 }

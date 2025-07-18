@@ -1,0 +1,221 @@
+﻿.file-type {
+    margin-top: 1em;
+}
+.row-header{
+    width:100% !important;
+}
+.modal-body {
+    padding-top:.5em !important;
+    padding-bottom:0 !important;
+    margin-left: -.5em;
+    padding-bottom: 0 !important;
+}
+.modal-footer .div-right{
+    margin-right:-.5em !important;
+}
+[aria-hidden="false"] {
+    transition: opacity 1s;
+    width: 100%;
+    z-index: 1;
+    opacity: 1;
+    display: block;
+}
+
+[aria-hidden="true"] {
+    display: none;
+    transition: opacity 1s, z-index 0s 1s;
+    width: 100vw;
+    z-index: -1;
+    opacity: 0;
+}
+.modal-dialog {
+    position: fixed !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 10px !important;
+    top: 10%;
+    left: 20%;
+}
+.add-facultative .modal-content,
+#choose-condition .modal-content,
+#confirm-financialyearadd .modal-content,
+#confirm-add.add-coveritem .modal-content,
+#confirm-permitteduser .modal-content,
+#confirm-permitteditem .modal-content {
+    width: 550px;
+    margin-top: 20%;
+    margin-left: 30%;
+}
+#modal-cic .modal-content,
+#modal-attachment .modal-content,
+#modal-instalment .modal-content,
+#confirm-sendtask .modal-content,
+#confirm-extract .modal-content,
+#confirm-changepassword .modal-content,
+#modal-signaturedelegation .modal-content,
+#confirm-closingbalanceitemsadd .model-content,
+#confirm-add .modal-content,
+#confirm-changecartable .modal-content,
+#confirm-ClassOfBusiness .modal-content,
+#mapfilter .modal-content,
+#confirm-range .modal-content,
+#confirm-curreny .modal-content {
+    width: 750px;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    vertical-align: middle;
+    display: inline-block;
+}
+#confirm-add.add-surveyunit .modal-content,
+#confirm-exporttoexcel .modal-content{
+    width: 500px !important;
+}
+
+#confirm-closingbalanceitemsadd .model-content
+{
+    width: 650px !important;
+    max-width: 650px !important;
+    margin-top: 20% !important;
+}
+
+#confirm-OfficialROEadd .modal-content,
+#confirm-OfficialUnitRiskadd .modal-content{
+    width: 660px !important;
+    max-width: 660px !important;
+}
+#modal-actionROE .modal-content {
+    width: 700px !important;
+    max-width: 700px !important;
+}
+#modal-automationfilter .modal-content, #modal-history .modal-content, #modal-lossreservehistory .modal-content,
+#modal-detailoriginalpolicy .modal-content,
+#modal-lossreserveendorsmentinfo .modal-content {
+    width: 1150px !important;
+}
+#modal-lossreserveendorsmentinfo .modal-content {
+    margin-left:10% !important;
+}
+#modal-lossreserveendorsmentinfo table {
+    margin-left: 2em !important;
+}
+#div-lossreservehistory table{
+    padding:.5em;
+    margin-left:1em !important;
+}
+.modal-header {
+    color: #fff;
+}
+
+.modal-content {
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.modal-header {
+    padding: 7px !important;
+    padding-right: 16px;
+    color: #fff !important;
+}
+
+    .modal-header *,
+    .modal-header .form-sub-title,
+    .modal-header modal-message.form-sub-title {
+        color: #fff !important;
+    }
+    
+    .modal-footer {
+        padding: 0 !important;
+        padding-right: 16px;
+        border: none !important;
+    }
+
+.modal-add .modal-header {
+    background: #587db7;
+}
+
+.modal-delete .modal-body i, .modal-accept .modal-body i {
+    margin-right: 7px !important;
+}
+
+.modal-delete .modal-header {
+    background: #ff5370;
+}
+
+.modal-Efficient .modal-header {
+    background: #999b9d;
+}
+.modal-delete .modal-body i {
+    color: #ff5370;
+}
+
+.modal-accept .modal-header {
+    background-color: #eb9d0f;
+}
+
+    .modal-accept .modal-body i {
+        color: #eb9d0f;
+    }
+
+.modal-choose .modal-header {
+    background-color: #165863;
+    color: #fff;
+}
+
+.modal-choose .modal-body .ti-download {
+    color: #165863;
+    margin-right: 7px !important;
+}
+
+.modal-success .modal-header {
+    background-color: #2ed8b6;
+    color: #fff;
+}
+
+.modal-choose .modal-body i, .modal-delete .modal-body i, .modal-accept .modal-body i {
+        color: rgba(43,61,81,.7);
+    display: inline-block;
+    font-size: 24px;
+    height: 50px;
+    line-height: 50px;
+    margin: 0 12px 0 0;
+    text-align: center;
+    vertical-align: middle;
+    width: 50px;
+}
+
+.modal-delete .modal-content, .modal-accept .modal-content {
+    margin-top: 20%;
+    margin-left: 60%;
+}
+
+.modal-content {
+    margin-left: 30% !important;
+    right:3px;
+}
+
+#modal-automationfilter .modal-content,
+#modal-history .modal-content, 
+#modal-attachment .modal-content,
+/*#modal-search .modal-content,*/
+#oil-modal-search .modal-content,
+#confirm-closingbalanceitemsadd .modal-content,
+#confirm-closingbalanceadd .modal-content,
+#confirm-financialyearadd .modal-content,
+#modal-detailoriginalpolicy .modal-content,
+#modal-confirm-info .modal-content {
+    margin-left: 20%;
+    margin-top: 20%;
+}
+#modal-search .modal-content, #modal-lossreservehistory .modal-content {
+    margin-left: 0% !important;
+    /*margin-top: 20%;*/
+}
+
+.imporatntElement{
+    z-index:9999 !important;
+
+}
+
+.fixedleft {
+    margin-left: 6% !important
+}

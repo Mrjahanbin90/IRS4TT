@@ -1,0 +1,86 @@
+﻿.tbl_TopLocation *{
+    font-size:13px !important;
+}
+.percentvalue {
+    width: 85px !important;
+}
+
+.percentwidth60 {
+    width: 60px !important;
+}
+
+.percentwidth70 {
+    width: 70px !important;
+}
+
+.percentwidth50 {
+    width: 50px !important;
+}
+
+.percentwidth90 {
+    width: 95px !important;
+}
+
+td.row-Dscr.percentvalue,
+td.row-Name.percentvalue.text-left,
+td.row-Dscr.percentwidth60,
+td.row-Name.percentwidth60.text-left,
+td.row-Dscr.percentwidth70,
+td.row-Name.percentwidth70.text-left {
+    text-align: center !important
+}
+
+.form-check {
+    margin-left: 1.3em !important;
+}
+
+.btn, .btn:hover {
+    background: transparent !important;
+    color: #4099ff !important;
+    border: none !important;
+}
+
+    .btn:hover {
+        color: #0c528e !important;
+    }
+
+#btndecide {
+    padding: 0 !important;
+    margin-top: -7px;
+    margin-left: 5px;
+}
+
+.modal-content {
+    width: 650px !important;
+}
+
+.checkwithsignature {
+    display: block;
+    width: 100%;
+}
+
+#div-signature, #div-signature .checkwithsignature {
+    margin-top: 1em !important;
+}
+
+.div-modal {
+    background: #eaf7ff;
+    padding-top: 1em !important;
+}
+
+.modal-header .close span {
+    font-size: 15px !important;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+.NOIMAGEAVAILABLE_100 {
+    max-width: 100px !important;
+    /*height: 300px !important;*/
+}
+
+.NOIMAGEAVAILABLE_200 {
+    width: 200px !important;
+}

@@ -1,0 +1,437 @@
+﻿
+body {
+    padding: 1em !important;
+    overflow: auto;
+}
+
+#Assesmentstatus {
+    color: red;
+    transform: rotate(-45deg);
+    font-size: 120px;
+    opacity: .4;
+    font-weight: bold;
+    text-align: left;
+    position: fixed;
+    top: 50%;
+    left: 40%;
+}
+
+@media print {
+    #Assesmentstatus {
+        color: red;
+        transform: rotate(-45deg);
+        font-size: 120px;
+        opacity: .4;
+        font-weight: bold;
+        text-align: left;
+        position: fixed;
+        top: 50%;
+        left: 20%;
+    }
+
+    .no-print, .no-print * {
+        display: none !important;
+    }
+
+    * {
+        font-size: 11px !important;
+    }
+
+    .data-header th {
+        padding-top: 5px !important;
+        font-size: 13px !important;
+    }
+
+    #risktable * {
+        font-size: 10px !important;
+        padding: 1px !important;
+        margin: 0 !important;
+    }
+
+    #risktable p {
+        margin-bottom: -.2em !important;
+    }
+
+    .percentvalue {
+        max-width: 85px !important;
+    }
+
+    .percentwidth60 {
+        max-width: 60px !important;
+    }
+
+    .percentwidth70 {
+        max-width: 70px !important;
+    }
+
+    .percentwidth50 {
+        max-width: 50px !important;
+    }
+
+    .percentwidth90 {
+        width: 95px !important;
+    }
+
+    td.row-Dscr.percentvalue,
+    td.row-Name.percentvalue.text-left,
+    td.row-Dscr.percentwidth60,
+    td.row-Name.percentwidth60.text-left,
+    td.row-Dscr.percentwidth70,
+    td.row-Name.percentwidth70.text-left {
+        text-align: center !important
+    }
+
+    .form-check {
+        margin-left: 1.3em !important;
+    }
+
+    .btn, .btn:hover {
+        background: transparent !important;
+        color: #4099ff !important;
+        border: none !important;
+    }
+
+        .btn:hover {
+            color: #0c528e !important;
+        }
+
+    #btndecide {
+        padding: 0 !important;
+        margin-top: -7px;
+        margin-left: 5px;
+    }
+
+    .modal-content {
+        width: 650px !important;
+    }
+
+    .checkwithsignature {
+        display: block;
+        width: 100%;
+    }
+
+    #div-signature, #div-signature .checkwithsignature {
+        margin-top: 1em !important;
+    }
+
+    .div-modal {
+        background: #eaf7ff;
+        padding-top: 1em !important;
+    }
+
+    .modal-header .close span {
+        font-size: 15px !important;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+    }
+}
+
+.content-table td.row-Dscr.text-center {
+    text-align: center !important;
+}
+
+.right-direction {
+    direction: rtl !important;
+}
+
+.left-direction {
+    direction: ltr !important;
+}
+/*.right-direction span,.left-direction span{
+    text-align: justify !important;
+    display:block !important;
+}*/
+
+.imgAvatar.result {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.EnvironmentName {
+    color: #17204f !important;
+    background: #c4d9f0 !important;
+}
+
+    .EnvironmentName * {
+        /*font-weight: bold;*/
+        padding: 5px !important;
+    }
+
+p.riskhistory-title {
+    padding: 5px;
+    height: 50px;
+    margin-bottom: -.08em;
+    border: 3px double #777;
+    border-bottom-color: rgb(51, 51, 51);
+    border-bottom-style: double;
+    border-bottom-width: 3px;
+    border-bottom: none;
+    font-weight: bold;
+    padding-top: 9px !important;
+}
+
+.border-right {
+    border-right: 1px solid #333 !important;
+}
+
+.company-logo {
+    width: 150px;
+    height: 150px;
+}
+
+.print-border {
+    border: 1px solid #333;
+    padding: 2px;
+    border-radius: 1px !important;
+}
+
+.riskhistory tr {
+    border: 3px double #777;
+    padding: 1em;
+    height: 50px;
+}
+
+.riskhistory tbody tr td p {
+    margin: 2px !important;
+}
+
+.riskhistory tr td {
+    font-size: 14px !important;
+}
+
+#risktable * {
+    font-size: 13px;
+}
+
+#risktable .data-header * {
+    font-size: 12px;
+}
+
+.content-table {
+    border-collapse: collapse;
+}
+
+.page-title {
+    text-align: right;
+}
+
+.second-title {
+    text-align: center;
+}
+
+body {
+    padding: 0.5cm;
+}
+
+html, body {
+    padding: 0;
+    margin: 0 auto;
+    max-width: 29.7cm;
+    -webkit-print-color-adjust: exact;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+}
+
+.data-header {
+    margin-top: 1em;
+}
+
+    .data-header * {
+        border: 1px solid #777;
+        text-align: center;
+        padding: 5px;
+    }
+
+th.row-No, th.row-Name, th.row-Dscr {
+    text-align: center;
+}
+
+th.row-No, th.row-Name, th.row-Dscr, td.row-Dscr, td.row-Name {
+    white-space: initial;
+    word-wrap: break-word;
+    padding: 3px;
+}
+
+.row-No, .row-Name, .row-Dscr {
+    border: 3px double #777 !important;
+}
+
+.row-No {
+    max-width: 45px !important;
+    min-width: 45px !important;
+    width: 45px !important;
+}
+
+    .row-No.fixed-row {
+        max-width: 50px !important;
+        min-width: 50px !important;
+        width: 50px !important;
+    }
+
+
+.row-Name {
+    max-width: 20%;
+    min-width: 20%;
+    width: 20%;
+    text-align: left;
+}
+
+.row-Dscr {
+    text-align: left;
+    display: table-cell !important;
+}
+
+/*td.row-Name {
+    text-align: left !important;
+}*/
+.text-left, .content-table td.row-Dscr {
+    text-align: left !important;
+}
+
+    .content-table td.row-Dscr.text-right {
+        text-align: right !important;
+    }
+
+.content-table td, .tbl_TopLocation .tr_TopLocation th {
+    border: 1px solid #777;
+    text-align: center;
+    padding: 0.1cm;
+    font-weight: normal;
+}
+
+.tbl_TopLocation .tr_TopLocation th {
+    font-weight: bold;
+}
+
+.table-No16 td {
+    border: none;
+    border-bottom: 1px solid #777;
+}
+
+.table-No16 tr {
+    border: 1px solid #777;
+}
+
+.table-No16 thead tr th {
+    border: 1px solid #777 !important;
+    background: #efefef;
+    font-size: 13px;
+}
+
+.table-No16 {
+    margin-bottom: 1em;
+}
+
+.currency-title, .riskhistory-title {
+    background: #ddd;
+    text-align: center;
+    height: 20px;
+}
+
+    .riskhistory-title th.text-center, .riskhistory-title td.row-Name.text-left, .riskhistory td.row-No.text-left {
+        text-align: center !important;
+    }
+
+p.address-location {
+    margin-bottom: .2em;
+}
+
+.form-check {
+    margin-left: 1.3em !important;
+}
+
+.btn, .btn:hover {
+    background: transparent !important;
+    color: #4099ff !important;
+    border: none !important;
+}
+
+    .btn:hover {
+        color: #0c528e !important;
+    }
+
+#btndecide {
+    padding: 0 !important;
+    margin-top: -7px;
+    margin-left: 5px;
+}
+
+.modal-content {
+    width: 650px !important;
+}
+
+.checkwithsignature {
+    display: block;
+    width: 100%;
+}
+
+#div-signature, #div-signature .checkwithsignature {
+    margin-top: 1em !important;
+}
+
+.div-modal {
+    background: #eaf7ff;
+    padding-top: 1em !important;
+}
+
+.modal-header .close span {
+    font-size: 15px !important;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+
+.imgAvatar.show.thumbnail {
+    width: 200px;
+    height: 200px;
+    margin-top: 1em;
+}
+
+.imgAvatar.thumbnail {
+    margin-top: 1em;
+}
+
+.cls_Accepted, .cls_1 {
+    color: #3b9123 !important;
+}
+
+.cls_Rejected, .cls_2 {
+    color: #ff5370 !important;
+}
+
+.cls_NoSee, .cls_0 {
+    color: #999 !important;
+}
+
+    .cls_NoSee.Manual {
+        color: #333 !important;
+    }
+
+#modalDescription {
+    margin-left: .4em;
+    margin-top: 1em;
+}
+
+    #modalDescription input {
+        width: 100%;
+    }
+
+table.riskhistory th, table.riskhistory tbody tr * {
+    min-width: 1px !important;
+    width: 1px !important;
+    max-width: 1px !important;
+}
+
+#gotoWizard {
+    cursor: pointer !important;
+}
+#gotoLoss {
+    cursor: pointer !important;
+}
